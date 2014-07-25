@@ -8,10 +8,19 @@
 
 Dictionary *dictionaryNew(int length){
 	Dictionary *dictionary = malloc(sizeof(Dictionary));
-	dictionary->entry = calloc(length, sizeof(DictionaryEntry));
+	dictionary->entries = calloc(length, sizeof(DictionaryEntry));
 	dictionary->length = length;
 	
 	return dictionary;
+}
+
+char *getDictTranslation(Dictionary *dict, int input){
+  char *translation = "";
+  int index = getIndex(input);
+  
+  translation = dict->entries[index].code;
+  
+  return translation;
 }
 
 char getAsciiTranslation(int input){
@@ -32,4 +41,15 @@ char *codeNewAndAppend(char *oldCode, char codeToAppend){
 	newCode[codeLen+1] = '\0';
 	
 	return newCode;
+}
+
+void dictionaryDel(Dictionary *dict){
+	int i;
+	
+	for(i = 0; i < dict->length; i++){
+		if(dict->entries[i].code != NULL)
+      free(dict->entries[i].code);
+	}
+  
+  free(dict);
 }
