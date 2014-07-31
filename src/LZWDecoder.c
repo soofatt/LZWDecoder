@@ -14,19 +14,19 @@ Dictionary *dictionaryNew(int length){
 	return dictionary;
 }
 
-char *getDictTranslation(Dictionary *dict, int input){
+char *getDictTranslation(Dictionary *dict, int inputIndex){
   char *translation = "";
-  int index = getIndex(input);
+  int index = getIndex(inputIndex);
   
   translation = dict->entries[index].code;
   
   return translation;
 }
 
-char getAsciiTranslation(int input){
+char getAsciiTranslation(int inputIndex){
 	char asciiTranslation;
 	
-	asciiTranslation = input;
+	asciiTranslation = inputIndex;
 	
 	return asciiTranslation;
 }
@@ -41,6 +41,17 @@ char *codeNewAndAppend(char *oldCode, char codeToAppend){
 	newCode[codeLen+1] = '\0';
 	
 	return newCode;
+}
+
+int dictionaryAdd(Dictionary *dict, char *code, int index){
+  
+  if(index >= dict->length || index < 0){
+    return 0;
+  }
+  else{
+    dict->entries[index].code = code;
+    return 1;
+  }
 }
 
 void dictionaryDel(Dictionary *dict){
