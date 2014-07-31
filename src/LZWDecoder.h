@@ -11,11 +11,12 @@ typedef struct {
 	int length;
 }Dictionary;
 
+void LZWDecode(Dictionary *dict);
 Dictionary *dictionaryNew(int length);
 void dictionaryDel(Dictionary *dict);
 int dictionaryAdd(Dictionary *dict, char *code, int index);
-char getAsciiTranslation(int input);
-char *getDictTranslation(Dictionary *dict, int input);
+char getAsciiTranslation(int inputIndex);
+char *getDictTranslation(Dictionary *dict, int inputIndex);
 char *codeNewAndAppend(char *oldCode, char codeToAppend);
 
 #endif // LZWDecoder_H
