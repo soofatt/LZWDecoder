@@ -1,6 +1,8 @@
 #ifndef OutStream_H
 #define OutStream_H
 
+#include <stdio.h>
+
 typedef struct OutStream{
 	FILE *file;
 	char *filename;
