@@ -1,8 +1,6 @@
 #ifndef LZWDecoder_H
 #define LZWDecoder_H
 
-#include "Dictionary.h"
-
 void LZWDecode(InStream *in, Dictionary *dict, OutStream *out);
 char getAsciiTranslation(int inputIndex);
 char *getDictTranslation(Dictionary *dict, int inputIndex);

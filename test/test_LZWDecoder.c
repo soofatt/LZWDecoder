@@ -6,10 +6,42 @@
 #include "CException.h"
 
 void setUp(void){}
-
 void tearDown(void){}
 
-void test_LZWDecode(){}
+// void test_emitCode_given_index_97_should_translate_to_a_and_output_a(){
+  // Dictionary *dictionary = dictionaryNew(100);
+  // OutStream *out;
+  // int index = 97;
+  
+  // streamWriteBits_Expect(out, 97, 8);
+  
+  // emitCode(dictionary, index, out);
+// }
+
+// void test_emitCode_given_index_256_should_translate_to_ab_and_output_ab(){
+  // Dictionary *dictionary = dictionaryNew(100);
+  // dictionary->entries[0].code = "ab";
+  // OutStream *out;
+  // int index = 256;
+  
+  // streamWriteBits_Expect(out, 97, 8);
+  // streamWriteBits_Expect(out, 98, 8);
+  
+  // emitCode(dictionary, index, out);
+// }
+
+void test_emitCode_given_index_257_should_translate_to_nan_and_output_nan(){
+  Dictionary *dictionary = dictionaryNew(100);
+  dictionary->entries[1].code = "nan";
+  OutStream *out;
+  int index = 257;
+  
+  streamWriteBits_Expect(out, 110, 8);
+  streamWriteBits_Expect(out, 97, 8);
+  streamWriteBits_Expect(out, 110, 8);
+  
+  emitCode(dictionary, index, out);
+}
 
 void test_getAsciiTranslation_given_ASCII_a_should_return_char_a(){
 	char result;
