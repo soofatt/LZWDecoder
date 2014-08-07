@@ -98,7 +98,7 @@ void test_getDictTranslation_given_256_index_0_should_return_ba(){
   dictionary->entries[0].code = "ba";
   char *result;
 	
-	result = (char *)getDictTranslation(dictionary, 256);
+	result = getDictTranslation(dictionary, 256);
 	
 	TEST_ASSERT_EQUAL_STRING("ba", result);
 }
@@ -108,7 +108,16 @@ void test_getDictTranslation_given_257_index_1_should_return_na(){
   dictionary->entries[1].code = "na";
   char *result;
 	
-	result = (char *)getDictTranslation(dictionary, 257);
+	result = getDictTranslation(dictionary, 257);
 	
 	TEST_ASSERT_EQUAL_STRING("na", result);
+}
+
+void test_getDictTranslation_given_258_index_2_should_return_NULL(){
+	Dictionary *dictionary = dictionaryNew(100);
+  char *result;
+	
+	result = getDictTranslation(dictionary, 258);
+	
+	TEST_ASSERT_EQUAL_STRING(NULL, result);
 }

@@ -27,7 +27,10 @@ void lzwDecode(InStream *in, Dictionary *dict, OutStream *out){
     else if(inputCode >= 256)
       translation = getDictTranslation(dict, inputCode);
     
-    emitCode(dict, inputCode, out);
+    if(translation == NULL)
+      translation = codeNewAndAppend(currentString, currentString[0]);
+    else{}
+    
     newDictEntry = codeNewAndAppend(currentString, translation[0]);
     
     if(dictionaryAdd(dict, newDictEntry, dictIndex) == 1){
@@ -36,6 +39,7 @@ void lzwDecode(InStream *in, Dictionary *dict, OutStream *out){
     else{}
       //fail to add to dict. error
       
+    emitCode(dict, inputCode, out);
     currentString = translation;
   }
 }
