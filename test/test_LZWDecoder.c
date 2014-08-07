@@ -1,9 +1,9 @@
 #include "unity.h"
+#include "CException.h"
 #include "Dictionary.h"
 #include "mock_InStream.h"
 #include "mock_OutStream.h"
 #include "LZWDecoder.h"
-#include "CException.h"
 
 void setUp(void){}
 void tearDown(void){}
@@ -30,17 +30,59 @@ void tearDown(void){}
   // emitCode(dictionary, index, out);
 // }
 
-void test_emitCode_given_index_257_should_translate_to_nan_and_output_nan(){
+// void test_emitCode_given_index_257_should_translate_to_nan_and_output_nan(){
+  // Dictionary *dictionary = dictionaryNew(100);
+  // dictionary->entries[1].code = "nan";
+  // OutStream *out;
+  // int index = 257;
+  
+  // streamWriteBits_Expect(out, 110, 8);
+  // streamWriteBits_Expect(out, 97, 8);
+  // streamWriteBits_Expect(out, 110, 8);
+  
+  // emitCode(dictionary, index, out);
+// }
+
+/* void test_lzwDecode_given_code_97_should_decode_into_a(){
+  CEXCEPTION_T e;
   Dictionary *dictionary = dictionaryNew(100);
-  dictionary->entries[1].code = "nan";
   OutStream *out;
-  int index = 257;
-  
-  streamWriteBits_Expect(out, 110, 8);
+  InStream *in;
+   
+  streamReadBits_ExpectAndReturn(in, 8, 97);
   streamWriteBits_Expect(out, 97, 8);
-  streamWriteBits_Expect(out, 110, 8);
+  streamReadBits_ExpectAndThrow(in, 9, END_OF_STREAM);
   
-  emitCode(dictionary, index, out);
+  Try{
+    lzwDecode(in, dictionary, out);
+  }Catch(e){
+    // TEST_ASSERT_EQUAL(END_OF_STREAM, e);
+    printf("End of stream");
+  }
+} */
+
+void test_lzwDecode_given_code_98_97_110_should_decode_into_ban(){
+  CEXCEPTION_T e;
+  Dictionary *dictionary = dictionaryNew(100);
+  OutStream *out;
+  InStream *in;
+   
+  streamReadBits_ExpectAndReturn(in, 8, 98);
+  streamWriteBits_Expect(out, 98, 8);
+  streamReadBits_ExpectAndReturn(in, 9, 97);
+  streamWriteBits_Expect(out, 97, 8);
+  streamReadBits_ExpectAndReturn(in, 9, 110);
+  streamWriteBits_Expect(out, 110, 8);
+  streamReadBits_ExpectAndThrow(in, 9, END_OF_STREAM);
+  
+  Try{
+    lzwDecode(in, dictionary, out);
+  }Catch(e){
+    // TEST_ASSERT_EQUAL(END_OF_STREAM, e);
+    TEST_ASSERT_EQUAL_STRING("ba", dictionary->entries[0].code);
+    TEST_ASSERT_EQUAL_STRING("an", dictionary->entries[1].code);
+    printf("End of stream");
+  }
 }
 
 void test_getAsciiTranslation_given_ASCII_a_should_return_char_a(){

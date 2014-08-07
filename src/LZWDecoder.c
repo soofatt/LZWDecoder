@@ -1,8 +1,8 @@
+#include "CException.h"
 #include "Dictionary.h"
 #include "InStream.h"
 #include "OutStream.h"
 #include "LZWDecoder.h"
-#include "CException.h"
 #include <stdio.h>
 #include <malloc.h>
 #include <String.h>
@@ -11,7 +11,33 @@
 #define bitSize     8
 
 //Throw when end of stream
-void LZWDecode(InStream *in, Dictionary *dict, OutStream *out){
+void lzwDecode(InStream *in, Dictionary *dict, OutStream *out){
+  int inputCode, dictIndex = 0;
+  char *currentString, *translation, *newDictEntry;
+  
+  inputCode = streamReadBits(in, 8);
+  emitCode(dict, inputCode, out);
+  translation = codeNewAndAppend("", getAsciiTranslation(inputCode));
+  currentString = translation;
+  
+  while(inputCode != -1){
+    inputCode = streamReadBits(in, 9);
+    if(inputCode < 256)
+      translation = codeNewAndAppend("", getAsciiTranslation(inputCode));
+    else if(inputCode >= 256)
+      translation = getDictTranslation(dict, inputCode);
+    
+    emitCode(dict, inputCode, out);
+    newDictEntry = codeNewAndAppend(currentString, translation[0]);
+    
+    if(dictionaryAdd(dict, newDictEntry, dictIndex) == 1){
+      dictIndex++;
+    }
+    else{}
+      //fail to add to dict. error
+      
+    currentString = translation;
+  }
 }
 
 char *getDictTranslation(Dictionary *dict, int inputIndex){
