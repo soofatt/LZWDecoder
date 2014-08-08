@@ -8,9 +8,12 @@ typedef enum{
   END_OF_STREAM
 } ErrorCode;
 
+extern char *(*_getDictTranslation)(Dictionary *dict, int inputIndex);
+
 void lzwDecode(InStream *in, Dictionary *dict, OutStream *out);
 char getAsciiTranslation(int inputIndex);
 char *getDictTranslation(Dictionary *dict, int inputIndex);
 void emitCode(Dictionary *dict, int index, OutStream *out);
+int getUpperLimit(Dictionary *dict);
 
 #endif // LZWDecoder_H

@@ -6,28 +6,29 @@
 #include <stdio.h>
 #include <malloc.h>
 #include <String.h>
-#include <math.h>
 
 #define getIndex(x) (x - 256)
 #define bitSize     8
 
+char *(*_getDictTranslation)(Dictionary *dict, int inputIndex) = getDictTranslation;
+
 //Throw when end of stream
 void lzwDecode(InStream *in, Dictionary *dict, OutStream *out){
-  int inputCode, dictIndex = 0, bitLimit, bitsToRead = 9, counter = 0;
+  int inputCode, dictIndex = 0, bitLimit, bitsToRead, counter = 0;
   char *currentString, *translation, *newDictEntry;
   
   inputCode = streamReadBits(in, 8);
   emitCode(dict, inputCode, out);
   translation = codeNewAndAppend("", getAsciiTranslation(inputCode));
   currentString = translation;
-  bitLimit = pow(2, (bitsToRead - 1));
+  bitLimit = getUpperLimit(dict);
   
   while(inputCode != -1){
     inputCode = streamReadBits(in, bitsToRead);
     if(inputCode < 256)
       translation = codeNewAndAppend("", getAsciiTranslation(inputCode));
     else if(inputCode >= 256)
-      translation = getDictTranslation(dict, inputCode);
+      translation = _getDictTranslation(dict, inputCode);
     
     if(translation == NULL)
       translation = codeNewAndAppend(currentString, currentString[0]);
@@ -48,7 +49,17 @@ void lzwDecode(InStream *in, Dictionary *dict, OutStream *out){
     counter++;
     if(counter == bitLimit){
       bitsToRead++;
-      bitLimit = pow(2, (bitsToRead - 1));
+      bitLimit = 1 << ;
+    }
+  }
+}
+
+int getUpperLimit(Dictionary *dict){
+  int i;
+  
+  for(i = 0; i < dict->length; i++){
+    if((1<<i) > dict->size){
+      return i;
     }
   }
 }
@@ -82,7 +93,7 @@ void emitCode(Dictionary *dict, int index, OutStream *out){
     streamWriteBits(out, index, bitSize);
   }
   else if(index >= 256){
-    translation = getDictTranslation(dict, index);
+    translation = _getDictTranslation(dict, index);
     for(i = 0; i < strlen(translation); i++){
       streamWriteBits(out, translation[i], bitSize);
     }

@@ -9,6 +9,7 @@ typedef struct {
 typedef struct {
 	DictionaryEntry *entries;
 	int length;
+  int size;
 }Dictionary;
 
 Dictionary *dictionaryNew(int length);

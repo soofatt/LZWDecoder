@@ -7,6 +7,7 @@ Dictionary *dictionaryNew(int length){
 	Dictionary *dictionary = malloc(sizeof(Dictionary));
 	dictionary->entries = calloc(length, sizeof(DictionaryEntry));
 	dictionary->length = length;
+  dictionary->size = 0;
 	
 	return dictionary;
 }
@@ -32,6 +33,7 @@ int dictionaryAdd(Dictionary *dict, char *code, int index){
   else{
     dict->entries[index].code = code;
     dict->entries[index].length = strlen(code);
+    dict->size++;
     return 1;
   }
 }

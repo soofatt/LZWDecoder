@@ -80,7 +80,6 @@ void test_lzwDecode_given_code_97_should_decode_into_a(){
     lzwDecode(&in, dictionary, &out);
   }Catch(e){
     TEST_ASSERT_EQUAL(END_OF_STREAM, e);
-    printf("End of stream");
   }
 }
 
@@ -104,7 +103,6 @@ void test_lzwDecode_given_code_98_97_110_should_decode_into_ban(){
     TEST_ASSERT_EQUAL(END_OF_STREAM, e);
     TEST_ASSERT_EQUAL_STRING("ba", dictionary->entries[0].code);
     TEST_ASSERT_EQUAL_STRING("an", dictionary->entries[1].code);
-    printf("End of stream");
   }
 }
 
@@ -144,7 +142,6 @@ void test_lzwDecode_case_1_should_decode_into_abcdabc(){
     TEST_ASSERT_EQUAL_STRING("cd", dictionary->entries[2].code);
     TEST_ASSERT_EQUAL_STRING("da", dictionary->entries[3].code);
     TEST_ASSERT_EQUAL_STRING("abc", dictionary->entries[4].code);
-    printf("End of stream");
   }
 }
 
@@ -180,7 +177,44 @@ void test_lzwDecode_case_2_should_decode_into_aaaaaaa(){
     TEST_ASSERT_EQUAL_STRING("aa", dictionary->entries[0].code);
     TEST_ASSERT_EQUAL_STRING("aaa", dictionary->entries[1].code);
     TEST_ASSERT_EQUAL_STRING("aaaa", dictionary->entries[2].code);
-    printf("End of stream");
+  }
+}
+
+/*
+ * Input : 98, 97, 110, 257, 259
+ *
+ * Output : bananana
+ *
+ */
+void test_lzwDecode_case_3_should_decode_into_bananana(){
+  CEXCEPTION_T e;
+  Dictionary *dictionary = dictionaryNew(4096);
+  OutStream out;
+  InStream in;
+   
+  streamReadBits_ExpectAndReturn(&in, 8, 98);
+  streamWriteBits_Expect(&out, 98, 8);
+  streamReadBits_ExpectAndReturn(&in, 9, 97);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamReadBits_ExpectAndReturn(&in, 9, 110);
+  streamWriteBits_Expect(&out, 110, 8);
+  streamReadBits_ExpectAndReturn(&in, 9, 257);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamWriteBits_Expect(&out, 110, 8);
+   streamReadBits_ExpectAndReturn(&in, 9, 259);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamWriteBits_Expect(&out, 110, 8);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamReadBits_ExpectAndThrow(&in, 9, END_OF_STREAM);
+  
+  Try{
+    lzwDecode(&in, dictionary, &out);
+  }Catch(e){
+    TEST_ASSERT_EQUAL(END_OF_STREAM, e);
+    TEST_ASSERT_EQUAL_STRING("ba", dictionary->entries[0].code);
+    TEST_ASSERT_EQUAL_STRING("an", dictionary->entries[1].code);
+    TEST_ASSERT_EQUAL_STRING("na", dictionary->entries[2].code);
+    TEST_ASSERT_EQUAL_STRING("ana", dictionary->entries[3].code);
   }
 }
 
