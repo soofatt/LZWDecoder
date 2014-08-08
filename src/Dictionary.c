@@ -31,6 +31,7 @@ int dictionaryAdd(Dictionary *dict, char *code, int index){
   }
   else{
     dict->entries[index].code = code;
+    dict->entries[index].length = strlen(code);
     return 1;
   }
 }

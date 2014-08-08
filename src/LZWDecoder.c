@@ -6,22 +6,24 @@
 #include <stdio.h>
 #include <malloc.h>
 #include <String.h>
+#include <math.h>
 
-#define getIndex(x) x - 256
+#define getIndex(x) (x - 256)
 #define bitSize     8
 
 //Throw when end of stream
 void lzwDecode(InStream *in, Dictionary *dict, OutStream *out){
-  int inputCode, dictIndex = 0;
+  int inputCode, dictIndex = 0, bitLimit, bitsToRead = 9, counter = 0;
   char *currentString, *translation, *newDictEntry;
   
   inputCode = streamReadBits(in, 8);
   emitCode(dict, inputCode, out);
   translation = codeNewAndAppend("", getAsciiTranslation(inputCode));
   currentString = translation;
+  bitLimit = pow(2, (bitsToRead - 1));
   
   while(inputCode != -1){
-    inputCode = streamReadBits(in, 9);
+    inputCode = streamReadBits(in, bitsToRead);
     if(inputCode < 256)
       translation = codeNewAndAppend("", getAsciiTranslation(inputCode));
     else if(inputCode >= 256)
@@ -29,25 +31,35 @@ void lzwDecode(InStream *in, Dictionary *dict, OutStream *out){
     
     if(translation == NULL)
       translation = codeNewAndAppend(currentString, currentString[0]);
-    else{}
+    else{}//Do nothing
     
     newDictEntry = codeNewAndAppend(currentString, translation[0]);
     
     if(dictionaryAdd(dict, newDictEntry, dictIndex) == 1){
       dictIndex++;
     }
-    else{}
-      //fail to add to dict. error
+    else{
+      Throw(ERR_EXCEEDING_DICTIONARY_SIZE);
+    }
       
     emitCode(dict, inputCode, out);
     currentString = translation;
+    
+    counter++;
+    if(counter == bitLimit){
+      bitsToRead++;
+      bitLimit = pow(2, (bitsToRead - 1));
+    }
   }
 }
 
 char *getDictTranslation(Dictionary *dict, int inputIndex){
   char *translation = "";
   int index = getIndex(inputIndex);
-  
+
+  if((dict->length) < index)
+    Throw(ERR_EXCEEDING_DICTIONARY_SIZE);
+
   translation = dict->entries[index].code;
   
   return translation;
@@ -66,7 +78,7 @@ void emitCode(Dictionary *dict, int index, OutStream *out){
   char *translation;
   int i;
   
-  if(index < 256){
+  if(index < 256 && index >= 0){
     streamWriteBits(out, index, bitSize);
   }
   else if(index >= 256){
@@ -74,5 +86,8 @@ void emitCode(Dictionary *dict, int index, OutStream *out){
     for(i = 0; i < strlen(translation); i++){
       streamWriteBits(out, translation[i], bitSize);
     }
+  }
+  else{
+    Throw(ERR_INVALID_INDEX);
   }
 }

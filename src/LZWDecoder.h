@@ -3,6 +3,8 @@
 
 typedef enum{
   ERR_NO_ERROR,
+  ERR_INVALID_INDEX,
+  ERR_EXCEEDING_DICTIONARY_SIZE,
   END_OF_STREAM
 } ErrorCode;
 
