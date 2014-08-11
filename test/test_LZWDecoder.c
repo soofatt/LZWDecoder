@@ -266,3 +266,12 @@ void test_getDictTranslation_given_258_index_2_smaller_than_dict_length_should_t
     TEST_ASSERT_EQUAL(ERR_EXCEEDING_DICTIONARY_SIZE, e);
   }
 }
+
+void test_getBitsToRead_should_return_9_given_dict_size_256(){
+  Dictionary *dictionary = dictionaryNew(100);
+  int result;
+  
+  result = getBitsToRead(dictionary);
+  
+  TEST_ASSERT_EQUAL(9, result);
+}

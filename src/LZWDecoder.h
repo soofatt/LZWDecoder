@@ -9,11 +9,12 @@ typedef enum{
 } ErrorCode;
 
 extern char *(*_getDictTranslation)(Dictionary *dict, int inputIndex);
+// extern void *(_lzwDecode)(InStream *in, Dictionary *dict, OutStream *out);
 
 void lzwDecode(InStream *in, Dictionary *dict, OutStream *out);
 char getAsciiTranslation(int inputIndex);
 char *getDictTranslation(Dictionary *dict, int inputIndex);
 void emitCode(Dictionary *dict, int index, OutStream *out);
-int getUpperLimit(Dictionary *dict);
+int getBitsToRead(Dictionary *dict);
 
 #endif // LZWDecoder_H

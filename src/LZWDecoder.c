@@ -11,17 +11,19 @@
 #define bitSize     8
 
 char *(*_getDictTranslation)(Dictionary *dict, int inputIndex) = getDictTranslation;
+// void *(_lzwDecode)(InStream *in, Dictionary *dict, OutStream *out) = lzwDecode;
 
 //Throw when end of stream
 void lzwDecode(InStream *in, Dictionary *dict, OutStream *out){
   int inputCode, dictIndex = 0, bitLimit, bitsToRead, counter = 0;
   char *currentString, *translation, *newDictEntry;
   
-  inputCode = streamReadBits(in, 8);
+  bitsToRead = getBitsToRead(dict);
+  inputCode = streamReadBits(in, (bitsToRead - 1));
   emitCode(dict, inputCode, out);
   translation = codeNewAndAppend("", getAsciiTranslation(inputCode));
   currentString = translation;
-  bitLimit = getUpperLimit(dict);
+  bitLimit = 1 << (bitsToRead - 1);
   
   while(inputCode != -1){
     inputCode = streamReadBits(in, bitsToRead);
@@ -49,16 +51,16 @@ void lzwDecode(InStream *in, Dictionary *dict, OutStream *out){
     counter++;
     if(counter == bitLimit){
       bitsToRead++;
-      bitLimit = 1 << ;
+      bitLimit = 1 << (bitsToRead - 1);
     }
   }
 }
 
-int getUpperLimit(Dictionary *dict){
+int getBitsToRead(Dictionary *dict){
   int i;
   
-  for(i = 0; i < dict->length; i++){
-    if((1<<i) > dict->size){
+  for(i = 0; i < dict->size; i++){
+    if((1 << i) > dict->size){
       return i;
     }
   }

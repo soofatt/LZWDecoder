@@ -7,7 +7,7 @@ Dictionary *dictionaryNew(int length){
 	Dictionary *dictionary = malloc(sizeof(Dictionary));
 	dictionary->entries = calloc(length, sizeof(DictionaryEntry));
 	dictionary->length = length;
-  dictionary->size = 0;
+  dictionary->size = 256;
 	
 	return dictionary;
 }
