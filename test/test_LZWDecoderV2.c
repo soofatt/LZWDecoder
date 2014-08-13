@@ -4,23 +4,23 @@
 #include "mock_InStream.h"
 #include "mock_OutStream.h"
 #include "LZWDecoder.h"
+#include <String.h>
+
+#define bitSize   8
 
 char *(*oldGetDictTranslation)(Dictionary *dict, int inputIndex);
-// void *(oldLzwDecode)(InStream *in, Dictionary *dict, OutStream *out);
 
-// void newLzwDecode(InStream *in, Dictionary *dict, OutStream *out);
 char *newGetDictTranslation(Dictionary *dict, int inputIndex);
 void updateDictionary(Dictionary *dict, char code, int index);
+void emitCodeForTesting(Dictionary *dict, int index, OutStream *out);
+void lzwDecodeForTesting(InStream *in, Dictionary *dict, OutStream *out);
 
 void setUp(void){
   oldGetDictTranslation = _getDictTranslation;
   _getDictTranslation = newGetDictTranslation;
-  // oldLzwDecode = _lzwDecode;
-  // _lzwDecode = newLzwDecode;
 }
 void tearDown(void){
   _getDictTranslation = oldGetDictTranslation;
-  // _lzwDecode = oldLzwDecode;
 }
 
 char *newGetDictTranslation(Dictionary *dict, int inputIndex){
@@ -34,20 +34,19 @@ char *newGetDictTranslation(Dictionary *dict, int inputIndex){
   return translation;
 }
 
-/* void newLzwDecode(InStream *in, Dictionary *dict, OutStream *out){
-  int inputCode, dictIndex = 0, bitLimit, bitsToRead, counter = 0;
+void lzwDecodeForTesting(InStream *in, Dictionary *dict, OutStream *out){
+  int inputCode, dictIndex = 4, bitLimit, bitsToRead, counter = 0;
   char *currentString, *translation, *newDictEntry;
   
   bitsToRead = getBitsToRead(dict);
   inputCode = streamReadBits(in, (bitsToRead - 1));
-  emitCode(dict, inputCode, out);
+  emitCodeForTesting(dict, inputCode, out);
   translation = _getDictTranslation(dict, inputCode);
   currentString = translation;
   bitLimit = 1 << (bitsToRead - 1);
   
   while(inputCode != -1){
     inputCode = streamReadBits(in, bitsToRead);
-    
     translation = _getDictTranslation(dict, inputCode);
     
     if(translation == NULL)
@@ -63,7 +62,7 @@ char *newGetDictTranslation(Dictionary *dict, int inputIndex){
       Throw(ERR_EXCEEDING_DICTIONARY_SIZE);
     }
       
-    emitCode(dict, inputCode, out);
+    emitCodeForTesting(dict, inputCode, out);
     currentString = translation;
     
     counter++;
@@ -72,7 +71,22 @@ char *newGetDictTranslation(Dictionary *dict, int inputIndex){
       bitLimit = 1 << (bitsToRead - 1);
     }
   }
-} */
+}
+
+void emitCodeForTesting(Dictionary *dict, int index, OutStream *out){
+  char *translation;
+  int i;
+  
+  if(index >= 0){
+    translation = _getDictTranslation(dict, index);
+    for(i = 0; i < strlen(translation); i++){
+      streamWriteBits(out, translation[i], bitSize);
+    }
+  }
+  else{
+    Throw(ERR_INVALID_INDEX);
+  }
+}
 
 void updateDictionary(Dictionary *dict, char code, int index){
   char *codeToAdd = codeNewAndAppend("", code);
@@ -100,22 +114,22 @@ void test_lzwDecode_given_bits_to_read_2_should_increase_to_4(){
 	updateDictionary(dictionary, 'd', 3);
   
   streamReadBits_ExpectAndReturn(&in, 2, 0);
-  streamWriteBits_Expect(&out, 0, 8);
+  streamWriteBits_Expect(&out, 97, 8);
   streamReadBits_ExpectAndReturn(&in, 3, 1);
-  streamWriteBits_Expect(&out, 1, 8);
+  streamWriteBits_Expect(&out, 98, 8);
   streamReadBits_ExpectAndReturn(&in, 3, 2);
-  streamWriteBits_Expect(&out, 2, 8);
+  streamWriteBits_Expect(&out, 99, 8);
   streamReadBits_ExpectAndReturn(&in, 3, 3);
-  streamWriteBits_Expect(&out, 3, 8);
+  streamWriteBits_Expect(&out, 100, 8);
   streamReadBits_ExpectAndReturn(&in, 3, 4);
-  // streamWriteBits_Expect(&out, 0, 8);
-  // streamWriteBits_Expect(&out, 1, 8);
-  // streamReadBits_ExpectAndReturn(&in, 4, 2);
-  // streamWriteBits_Expect(&out, 2, 8);
-  // streamReadBits_ExpectAndThrow(&in, 4, END_OF_STREAM);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamWriteBits_Expect(&out, 98, 8);
+  streamReadBits_ExpectAndReturn(&in, 4, 2);
+  streamWriteBits_Expect(&out, 99, 8);
+  streamReadBits_ExpectAndThrow(&in, 4, END_OF_STREAM);
   
   Try{
-    lzwDecode(&in, dictionary, &out);
+    lzwDecodeForTesting(&in, dictionary, &out);
 	}Catch(e){
     TEST_ASSERT_EQUAL(END_OF_STREAM, e);
   }
