@@ -43,8 +43,8 @@ void test_emitCode_given_index_256_should_translate_to_ab_and_output_a_b(){
   OutStream out;
   int index = 256;
   
-   streamWriteBits_Expect(&out, 97, 8);
-   streamWriteBits_Expect(&out, 98, 8);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamWriteBits_Expect(&out, 98, 8);
   
   Try{
     emitCode(dictionary, index, &out);
@@ -162,7 +162,7 @@ void test_lzwDecode_case_2_should_decode_into_aaaaaaa(){
   streamReadBits_ExpectAndReturn(&in, 9, 256);
   streamWriteBits_Expect(&out, 97, 8);
   streamWriteBits_Expect(&out, 97, 8);
-   streamReadBits_ExpectAndReturn(&in, 9, 257);
+  streamReadBits_ExpectAndReturn(&in, 9, 257);
   streamWriteBits_Expect(&out, 97, 8);
   streamWriteBits_Expect(&out, 97, 8);
   streamWriteBits_Expect(&out, 97, 8);
@@ -201,7 +201,7 @@ void test_lzwDecode_case_3_should_decode_into_bananana(){
   streamReadBits_ExpectAndReturn(&in, 9, 257);
   streamWriteBits_Expect(&out, 97, 8);
   streamWriteBits_Expect(&out, 110, 8);
-   streamReadBits_ExpectAndReturn(&in, 9, 259);
+  streamReadBits_ExpectAndReturn(&in, 9, 259);
   streamWriteBits_Expect(&out, 97, 8);
   streamWriteBits_Expect(&out, 110, 8);
   streamWriteBits_Expect(&out, 97, 8);
@@ -218,7 +218,100 @@ void test_lzwDecode_case_3_should_decode_into_bananana(){
   }
 }
 
-void test_getAsciiTranslation_given_ASCII_a_should_return_char_a(){
+/*
+ * Input : 98, 97, 110, 257, 97, 95, 258, 258, 256
+ *
+ * Output : banana_nanaba
+ *
+ */
+void test_lzwDecode_case_4_should_decode_into_banana_nanaba(){
+  CEXCEPTION_T e;
+  Dictionary *dictionary = dictionaryNew(4096);
+  OutStream out;
+  InStream in;
+   
+  streamReadBits_ExpectAndReturn(&in, 8, 98);
+  streamWriteBits_Expect(&out, 98, 8);
+  streamReadBits_ExpectAndReturn(&in, 9, 97);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamReadBits_ExpectAndReturn(&in, 9, 110);
+  streamWriteBits_Expect(&out, 110, 8);
+  streamReadBits_ExpectAndReturn(&in, 9, 257);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamWriteBits_Expect(&out, 110, 8);
+  streamReadBits_ExpectAndReturn(&in, 9, 97);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamReadBits_ExpectAndReturn(&in, 9, 95);
+  streamWriteBits_Expect(&out, 95, 8);
+  streamReadBits_ExpectAndReturn(&in, 9, 258);
+  streamWriteBits_Expect(&out, 110, 8);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamReadBits_ExpectAndReturn(&in, 9, 258);
+  streamWriteBits_Expect(&out, 110, 8);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamReadBits_ExpectAndReturn(&in, 9, 256);
+  streamWriteBits_Expect(&out, 98, 8);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamReadBits_ExpectAndThrow(&in, 9, END_OF_STREAM);
+  
+  Try{
+    lzwDecode(&in, dictionary, &out);
+  }Catch(e){
+    TEST_ASSERT_EQUAL(END_OF_STREAM, e);
+    TEST_ASSERT_EQUAL_STRING("ba", dictionary->entries[0].code);
+    TEST_ASSERT_EQUAL_STRING("an", dictionary->entries[1].code);
+    TEST_ASSERT_EQUAL_STRING("na", dictionary->entries[2].code);
+    TEST_ASSERT_EQUAL_STRING("ana", dictionary->entries[3].code);
+    TEST_ASSERT_EQUAL_STRING("a_", dictionary->entries[4].code);
+    TEST_ASSERT_EQUAL_STRING("_n", dictionary->entries[5].code);
+    TEST_ASSERT_EQUAL_STRING("nan", dictionary->entries[6].code);
+    TEST_ASSERT_EQUAL_STRING("nab", dictionary->entries[7].code);
+  }
+}
+
+/*
+ * Input : 4096
+ *
+ * Output : Should throw
+ *
+ */
+void test_lzwDecode_case_5_should_throw_invalid_index_error(){
+  CEXCEPTION_T e;
+  Dictionary *dictionary = dictionaryNew(4096);
+  OutStream out;
+  InStream in;
+   
+  streamReadBits_ExpectAndReturn(&in, 8, 4096);
+  
+  Try{
+    lzwDecode(&in, dictionary, &out);
+  }Catch(e){
+    TEST_ASSERT_EQUAL(ERR_INVALID_INDEX, e);
+  }
+}
+
+/*
+ * Input : -1
+ *
+ * Output : Should throw
+ *
+ */
+void test_lzwDecode_case_6_should_throw_invalid_index_error(){
+  CEXCEPTION_T e;
+  Dictionary *dictionary = dictionaryNew(4096);
+  OutStream out;
+  InStream in;
+   
+  streamReadBits_ExpectAndReturn(&in, 8, -1);
+  
+  Try{
+    lzwDecode(&in, dictionary, &out);
+  }Catch(e){
+    TEST_ASSERT_EQUAL(ERR_INVALID_INDEX, e);
+  }
+}
+
+void test_getAsciiTranslation_given_ASCII_a_in_integer_should_return_char_a(){
 	char result;
 	
 	result = getAsciiTranslation(97);
@@ -226,7 +319,7 @@ void test_getAsciiTranslation_given_ASCII_a_should_return_char_a(){
 	TEST_ASSERT_EQUAL('a', result);
 }
 
-void test_getDictTranslation_given_256_index_0_should_return_ba(){
+void test_getDictTranslation_given_256_index_0_with_ba_in_index_0_should_return_ba(){
 	Dictionary *dictionary = dictionaryNew(100);
   dictionary->entries[0].code = "ba";
   char *result;
@@ -236,7 +329,7 @@ void test_getDictTranslation_given_256_index_0_should_return_ba(){
 	TEST_ASSERT_EQUAL_STRING("ba", result);
 }
 
-void test_getDictTranslation_given_257_index_1_should_return_na(){
+void test_getDictTranslation_given_257_index_1_with_na_in_index_1_should_return_na(){
 	Dictionary *dictionary = dictionaryNew(100);
   dictionary->entries[1].code = "na";
   char *result;
@@ -246,7 +339,7 @@ void test_getDictTranslation_given_257_index_1_should_return_na(){
 	TEST_ASSERT_EQUAL_STRING("na", result);
 }
 
-void test_getDictTranslation_given_258_index_2_should_return_NULL(){
+void test_getDictTranslation_given_258_index_2_with_nothing_should_return_NULL(){
 	Dictionary *dictionary = dictionaryNew(100);
   char *result;
 	
@@ -255,7 +348,7 @@ void test_getDictTranslation_given_258_index_2_should_return_NULL(){
 	TEST_ASSERT_EQUAL_STRING(NULL, result);
 }
 
-void test_getDictTranslation_given_258_index_2_smaller_than_dict_length_should_throw_error(){
+void test_getDictTranslation_given_258_index_2_larger_than_dict_length_should_throw_error(){
 	CEXCEPTION_T e;
   Dictionary *dictionary = dictionaryNew(1);
   char *result;
@@ -274,4 +367,14 @@ void test_getBitsToRead_should_return_9_given_dict_size_256(){
   result = getBitsToRead(dictionary);
   
   TEST_ASSERT_EQUAL(9, result);
+}
+
+void test_getBitsToRead_should_return_3_given_dict_size_4(){
+  Dictionary *dictionary = dictionaryNew(100);
+  int result;
+  dictionary->size = 4;
+  
+  result = getBitsToRead(dictionary);
+  
+  TEST_ASSERT_EQUAL(3, result);
 }

@@ -132,5 +132,64 @@ void test_lzwDecode_given_bits_to_read_2_should_increase_to_4(){
     lzwDecodeForTesting(&in, dictionary, &out);
 	}Catch(e){
     TEST_ASSERT_EQUAL(END_OF_STREAM, e);
+    TEST_ASSERT_EQUAL_STRING("ab", dictionary->entries[4].code);
+    TEST_ASSERT_EQUAL_STRING("bc", dictionary->entries[5].code);
+    TEST_ASSERT_EQUAL_STRING("cd", dictionary->entries[6].code);
+    TEST_ASSERT_EQUAL_STRING("da", dictionary->entries[7].code);
+    TEST_ASSERT_EQUAL_STRING("abc", dictionary->entries[8].code);
+  }
+}
+
+/*
+ *Input : 0, 4, 5, 6, 7, 0
+ *
+ *Output : aaaaaaaaaaaaaaaaa (17 'a's)
+ */
+void test_lzwDecode_given_bits_to_read_2_should_increase_to_4_case_2(){
+	CEXCEPTION_T e;
+  Dictionary *dictionary = dictionaryNew(20);
+  InStream in;
+  OutStream out;
+  char *result;
+  
+  dictionary->size = 0;
+	updateDictionary(dictionary, 'a', 0);
+	updateDictionary(dictionary, 'b', 1);
+	updateDictionary(dictionary, 'c', 2);
+	updateDictionary(dictionary, 'd', 3);
+  
+  streamReadBits_ExpectAndReturn(&in, 2, 0);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamReadBits_ExpectAndReturn(&in, 3, 4);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamReadBits_ExpectAndReturn(&in, 3, 5);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamReadBits_ExpectAndReturn(&in, 3, 6);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamReadBits_ExpectAndReturn(&in, 3, 7);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamReadBits_ExpectAndReturn(&in, 4, 0);
+  streamWriteBits_Expect(&out, 97, 8);
+  streamReadBits_ExpectAndThrow(&in, 4, END_OF_STREAM);
+  
+  Try{
+    lzwDecodeForTesting(&in, dictionary, &out);
+	}Catch(e){
+    TEST_ASSERT_EQUAL(END_OF_STREAM, e);
+    TEST_ASSERT_EQUAL_STRING("aa", dictionary->entries[4].code);
+    TEST_ASSERT_EQUAL_STRING("aaa", dictionary->entries[5].code);
+    TEST_ASSERT_EQUAL_STRING("aaaa", dictionary->entries[6].code);
+    TEST_ASSERT_EQUAL_STRING("aaaaa", dictionary->entries[7].code);
+    TEST_ASSERT_EQUAL_STRING("aaaaaa", dictionary->entries[8].code);
   }
 }

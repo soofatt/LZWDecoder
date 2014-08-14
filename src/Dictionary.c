@@ -3,6 +3,15 @@
 #include <malloc.h>
 #include <String.h>
 
+/*To create a new custom dictionary.
+ *
+ *Input: length -> the length dictionary.
+ *
+ *Output:dictionary -> the dictionary.
+ *
+ *Throw:  -
+ *
+ */
 Dictionary *dictionaryNew(int length){
 	Dictionary *dictionary = malloc(sizeof(Dictionary));
 	dictionary->entries = calloc(length, sizeof(DictionaryEntry));
@@ -12,6 +21,16 @@ Dictionary *dictionaryNew(int length){
 	return dictionary;
 }
 
+/*To append a character to a string
+ *
+ *Input: *oldCode -> the old string
+ *       codeToAppend -> the character to be appended to the old string.
+ *
+ *Output:newCode -> the new string with the appended character.
+ *
+ *Throw:  -
+ *
+ */
 char *codeNewAndAppend(char *oldCode, char codeToAppend){
 	char *newCode = malloc((strlen(oldCode)) + 1 + 1); 
 	int codeLen = strlen(oldCode);
@@ -24,7 +43,18 @@ char *codeNewAndAppend(char *oldCode, char codeToAppend){
 	return newCode;
 }
 
-//0 = fail to add, 1 = add successful
+/*To add an entry into the custom dictionary.
+ *
+ *Input: *dict -> the dictionary.
+ *       *code -> the string(entry) to be added into the custom dictionary.
+ *       index -> the index where the new entry should be inserted at.
+ *
+ *Output:1 -> if entry was successfully added.
+ *       0 -> if entry failed to be added into custom dictionary.
+ *
+ *Throw:  -
+ *
+ */
 int dictionaryAdd(Dictionary *dict, char *code, int index){
   
   if(index >= dict->length || index < 0){
@@ -38,6 +68,15 @@ int dictionaryAdd(Dictionary *dict, char *code, int index){
   }
 }
 
+/*To delete the dictionary.
+ *
+ *Input: *dict -> the dictionary.
+ *
+ *Output: -
+ *
+ *Throw:  -
+ *
+ */
 void dictionaryDel(Dictionary *dict){
 	int i;
 	

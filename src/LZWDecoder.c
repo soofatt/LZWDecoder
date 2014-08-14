@@ -11,15 +11,31 @@
 #define bitSize     8
 
 char *(*_getDictTranslation)(Dictionary *dict, int inputIndex) = getDictTranslation;
-// void *(_lzwDecode)(InStream *in, Dictionary *dict, OutStream *out) = lzwDecode;
 
-//Throw when end of stream
+/*To decode a given stream of inputs
+ *
+ *Input: *in -> the input stream from file.
+ *       *dict -> the dictionary.
+ *       *out -> the output stream to file.
+ *
+ *Output: -
+ *
+ *Throw:  ERR_INVALID_INDEX -> Thrown when given input code is <0.
+ *        ERR_EXCEEDING_DICTIONARY_SIZE -> Thrown when attempting to add another
+ *                                         entry to a full custom dictionary
+ *
+ */
 void lzwDecode(InStream *in, Dictionary *dict, OutStream *out){
   int inputCode, dictIndex = 0, bitLimit, bitsToRead, counter = 0;
   char *currentString, *translation, *newDictEntry;
   
   bitsToRead = getBitsToRead(dict);
+  
   inputCode = streamReadBits(in, (bitsToRead - 1));
+  
+  if(inputCode >= dict->length || inputCode < 0)
+    Throw(ERR_INVALID_INDEX);
+    
   emitCode(dict, inputCode, out);
   translation = codeNewAndAppend("", getAsciiTranslation(inputCode));
   currentString = translation;
@@ -27,10 +43,12 @@ void lzwDecode(InStream *in, Dictionary *dict, OutStream *out){
   
   while(inputCode != -1){
     inputCode = streamReadBits(in, bitsToRead);
-    if(inputCode < 256)
+    if(inputCode < 256 && inputCode >= 0)
       translation = codeNewAndAppend("", getAsciiTranslation(inputCode));
     else if(inputCode >= 256)
       translation = _getDictTranslation(dict, inputCode);
+    else
+      Throw(ERR_INVALID_INDEX);
     
     if(translation == NULL)
       translation = codeNewAndAppend(currentString, currentString[0]);
@@ -56,6 +74,15 @@ void lzwDecode(InStream *in, Dictionary *dict, OutStream *out){
   }
 }
 
+/*To find the number of bits to be read by streamReadBits function.
+ *
+ *Input: *dict -> the dictionary.
+ *
+ *Output:i -> the number of bits that is to be read.
+ *
+ *Throw:  -
+ *
+ */
 int getBitsToRead(Dictionary *dict){
   int i;
   
@@ -66,9 +93,19 @@ int getBitsToRead(Dictionary *dict){
   }
 }
 
+/*To find the translation of a given code if it is within the custom dictionary
+ *
+ *Input: *dict -> the dictionary.
+ *       inputIndex -> input code.
+ *
+ *Output:translation -> the translation of the input code.
+ *
+ *Throw:  -
+ *
+ */
 char *getDictTranslation(Dictionary *dict, int inputIndex){
   char *translation = "";
-  int index = getIndex(inputIndex);
+  int index = getIndex(inputIndex);//To find the corresponding index for the custom dictionary
 
   if((dict->length) < index)
     Throw(ERR_EXCEEDING_DICTIONARY_SIZE);
@@ -78,6 +115,15 @@ char *getDictTranslation(Dictionary *dict, int inputIndex){
   return translation;
 }
 
+/*To find the translation of a given code if it is within the ASCII table (0 - 255)
+ *
+ *Input: inputIndex -> input code.
+ *
+ *Output:asciiTranslation -> the translation of the input code.
+ *
+ *Throw:  -
+ *
+ */
 char getAsciiTranslation(int inputIndex){
 	char asciiTranslation;
 	
@@ -86,16 +132,26 @@ char getAsciiTranslation(int inputIndex){
 	return asciiTranslation;
 }
 
-//find translation and output code
-void emitCode(Dictionary *dict, int index, OutStream *out){
+/*To find the translation of a given code and output through streamWriteBits function.
+ *
+ *Input: *dict -> the dictionary.
+ *       inputIndex -> input code (which is also the dictionary index to be searched).
+ *       *out  -> output stream to file.
+ *
+ *Output: -
+ *
+ *Throw:  ERR_INVALID_INDEX -> Thrown if index is <0.
+ *
+ */
+void emitCode(Dictionary *dict, int inputIndex, OutStream *out){
   char *translation;
   int i;
   
-  if(index < 256 && index >= 0){
-    streamWriteBits(out, index, bitSize);
+  if(inputIndex < 256 && inputIndex >= 0){
+    streamWriteBits(out, inputIndex, bitSize);
   }
-  else if(index >= 256){
-    translation = _getDictTranslation(dict, index);
+  else if(inputIndex >= 256){
+    translation = _getDictTranslation(dict, inputIndex);
     for(i = 0; i < strlen(translation); i++){
       streamWriteBits(out, translation[i], bitSize);
     }
