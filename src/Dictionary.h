@@ -8,8 +8,8 @@ typedef struct {
 
 typedef struct {
 	DictionaryEntry *entries;
-	int length;
-  int size;
+	int length; //Total size of dictionary
+  int size; //Size of current dictionary
 }Dictionary;
 
 Dictionary *dictionaryNew(int length);

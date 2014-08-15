@@ -3,6 +3,7 @@
 #include "InStream.h"
 #include "OutStream.h"
 #include "LZWDecoder.h"
+#include "ErrorCode.h"
 #include <stdio.h>
 #include <malloc.h>
 #include <String.h>

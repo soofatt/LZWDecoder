@@ -3,6 +3,7 @@
 #include "Dictionary.h"
 #include "mock_InStream.h"
 #include "mock_OutStream.h"
+#include "ErrorCode.h"
 #include "LZWDecoder.h"
 
 void setUp(void){}
