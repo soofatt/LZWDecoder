@@ -26,6 +26,7 @@ int streamReadBits(InStream *in, int bitSize){
   while(in->currentByte <= (bitSize/8)){
     if((inputByte = fgetc(in->file)) == EOF)
       Throw(END_OF_STREAM);
+      
     byteToRead = inputByte;
     
     for(i = 0; i < 8; i++){
