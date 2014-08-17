@@ -154,6 +154,35 @@ void test_streamReadBits_given_a_0x804040_should_return_97_and_257(){
   TEST_ASSERT_EQUAL(256, result2);
 }
 
+void test_streamReadBits_given_a_0x62616e_should_return_98_97_110(){
+	CEXCEPTION_T e;
+  InStream *in;
+  int result, result2, result3;
+
+  Try{
+    in = openInStream("InputTest_7.txt", "r");
+  }Catch(e){
+    TEST_ASSERT_EQUAL(ERR_CANNOT_OPEN_FILE, e);
+  }
+
+  Try{
+    result = streamReadBits(in, 8);
+    result2 = streamReadBits(in, 8);
+    result3 = streamReadBits(in, 8);
+  }Catch(e){
+    TEST_ASSERT_EQUAL(END_OF_STREAM, e);
+  }  
+    
+  TEST_ASSERT_EQUAL(0, in->bitIndex);
+  TEST_ASSERT_EQUAL(0, in->currentByte);
+  
+  closeInStream(in);
+
+  TEST_ASSERT_EQUAL(98, result);
+  TEST_ASSERT_EQUAL(97, result2);
+  TEST_ASSERT_EQUAL(110, result3);
+}
+
 void test_streamReadBit_given_0x97_should_return_1(){
 	int result;
 

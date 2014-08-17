@@ -72,3 +72,26 @@ void test_streamWriteBits_given_bitsToWrite_97_and_98_should_write_ab_to_file(){
   
   closeOutStream(out);
 }
+
+void test_streamWriteBits_given_bitsToWrite_98_97_110_should_write_ban_to_file(){
+  OutStream *out;
+
+  out = openOutStream("OutputTestBitsWrite_3.txt", "w");
+
+  streamWriteBits(out, 98, 8);
+  
+  TEST_ASSERT_EQUAL(98, out->currentByte);
+  TEST_ASSERT_EQUAL(0, out->bitIndex);
+  
+  streamWriteBits(out, 97, 8);
+  
+  TEST_ASSERT_EQUAL(97, out->currentByte);
+  TEST_ASSERT_EQUAL(0, out->bitIndex);
+  
+  streamWriteBits(out, 110, 8);
+  
+  TEST_ASSERT_EQUAL(110, out->currentByte);
+  TEST_ASSERT_EQUAL(0, out->bitIndex);
+  
+  closeOutStream(out);
+}

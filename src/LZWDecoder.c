@@ -63,7 +63,7 @@ void lzwDecode(InStream *in, Dictionary *dict, OutStream *out){
     else{
       Throw(ERR_EXCEEDING_DICTIONARY_SIZE);
     }
-      
+    
     emitCode(dict, inputCode, out);
     currentString = translation;
     
@@ -148,9 +148,10 @@ void emitCode(Dictionary *dict, int inputIndex, OutStream *out){
   char *translation;
   int i;
   
-  if(inputIndex < 256 && inputIndex >= 0){
+  if(inputIndex < 256 && inputIndex > 0){
     streamWriteBits(out, inputIndex, bitSize);
   }
+  else if(inputIndex == 0){}//Do Nothing
   else if(inputIndex >= 256){
     translation = _getDictTranslation(dict, inputIndex);
     for(i = 0; i < strlen(translation); i++){
