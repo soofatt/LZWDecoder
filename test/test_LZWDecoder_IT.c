@@ -77,7 +77,11 @@ void test_lzwDecode_given_code_98_97_110_should_decode_into_ban(){
 }
 
 /*
- * Input : 97, 98, 99, 100, 256, 99
+ * Input : 97, 98, 99, 100, 256, 99(Integer)
+ *         0x61, 0x62, 0x63, 0x64, 0x100, 0x63(Hex)
+ *
+ *         In file(fixed for 9 bits):
+ *         0x61, 0x31, 0x18, 0xcc, 0x90, 0x03, 0x18
  *
  * Output : abcdabc
  *
@@ -109,6 +113,10 @@ void test_lzwDecode_case_1_should_decode_into_abcdabc(){
 
 /*
  * Input : 97, 256, 257, 97
+ *         0x61, 0x100, 0x101, 0x61
+ *
+ *         In file(fixed for 9 bits):
+ *         0x61, 0x80, 0x40, 0x4c, 0x20
  *
  * Output : aaaaaaa
  *
@@ -138,6 +146,10 @@ void test_lzwDecode_case_2_should_decode_into_aaaaaaa(){
 
 /*
  * Input : 98, 97, 110, 257, 259
+ *         0x62, 0x61, 0x6e, 0x101, 0x103
+ *
+ *         In file(fixed for 9 bits):
+ *         0x62, 0x30, 0x9b, 0xa0, 0x30, 0x30
  *
  * Output : bananana
  *
@@ -168,6 +180,10 @@ void test_lzwDecode_case_3_should_decode_into_bananana(){
 
 /*
  * Input : 98, 97, 110, 257, 97, 95, 258, 258, 256
+ *         0x62, 0x61, 0x6e, 0x101, 0x61, 0x5f, 0x102, 0x102, 0x100
+ *
+ *         In file(fixed for 9 bits):
+ *         0x62, 0x30, 0x9b, 0xa0, 0x26, 0x12, 0xfc, 0x0a, 0x05, 0x00
  *
  * Output : banana_nanaba
  *
