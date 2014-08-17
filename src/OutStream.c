@@ -38,6 +38,10 @@ void streamWriteBit(OutStream *out, uint8 bitToWrite){
     out->bitIndex = 0;
 }
 
+void streamFlush(OutStream *out){
+  fputc(out->currentByte, out->file);
+}
+
 void closeOutStream(OutStream *out){
   fclose(out->file);
   free(out);

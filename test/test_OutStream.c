@@ -95,3 +95,13 @@ void test_streamWriteBits_given_bitsToWrite_98_97_110_should_write_ban_to_file()
   
   closeOutStream(out);
 }
+
+void test_openOutStream_given_currentByte_0x70_should_flush_p_to_file(){
+  OutStream *out;
+
+  out = openOutStream("OutputFlushTest.txt", "w");
+
+  out->currentByte = 0x70;
+  
+  streamFlush(out);
+}
