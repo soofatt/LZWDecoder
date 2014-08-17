@@ -6,7 +6,7 @@
 void setUp(){}
 
 void tearDown(){}
-//TEST ASSERT MORE THING IN INSTREAM TEST, OUTSTREAM TEST IF BITINDEX MOVE N IF BITINDEX ROLLOVER FOR NEW BYTE
+//TEST ASSERT MORE THING IN INSTREAM TEST
 void test_openOutStream_given_output_test_file_should_write_d_to_file(){
   OutStream *out;
 

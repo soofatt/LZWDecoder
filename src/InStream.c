@@ -20,34 +20,48 @@ InStream *openInStream(char *fileName, char *openMethod){
 }
 
 int streamReadBits(InStream *in, int bitSize){
-  int i, inputByte, outputWhole = 0;
-  unsigned char byteToRead, tempBitRead = 0;
+  int i, inputByte, outputWhole = 0, bitCount = 0, byteCount = 0;
+  uint8 byteToRead, tempBitRead = 0;
   
-  while(in->currentByte <= (bitSize/8)){
-    if((inputByte = fgetc(in->file)) == EOF)
-      Throw(END_OF_STREAM);
-      
-    byteToRead = inputByte;
+  if(feof(in->file) != 0)
+    Throw(END_OF_STREAM);
+  
+  while(byteCount <= (bitSize/8)){
+    if(in->currentByte != 0)
+      byteToRead = in->currentByte;
+    else{
+      if((inputByte = fgetc(in->file)) == EOF)
+        break;
+      byteToRead = inputByte;
+    } 
     
-    for(i = 0; i < 8; i++){
+    for(i = in->bitIndex; i < 8; i++){
       outputWhole = outputWhole << 1;
       tempBitRead = streamReadBit(byteToRead);
       outputWhole = outputWhole | tempBitRead;
       byteToRead = byteToRead << 1;
-      if(in->bitIndex == (bitSize - 1))
+      in->bitIndex++;
+      if(in->bitIndex == 8)
+        in->bitIndex = 0;
+      if(bitCount == (bitSize - 1))
         break;
       else
-        in->bitIndex++;
+        bitCount++;
     }
-    if(i == 8)
-      in->currentByte++;
-    else if(in->bitIndex == (bitSize - 1))
+    if(i == 8){
+      byteCount++;
+      in->currentByte = byteToRead;
+    }
+    else if(bitCount == (bitSize - 1)){
+      in->currentByte = byteToRead;
       break;
+    }
   }
+  
   return outputWhole;
 }
 
-int streamReadBit(char byteToRead){
+int streamReadBit(uint8 byteToRead){
   int mask = 0x80, bitRead = 0;
 
   bitRead = (byteToRead & mask) >> 7;

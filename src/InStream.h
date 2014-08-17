@@ -14,7 +14,7 @@ typedef struct InStream{
 }InStream;
 
 int streamReadBits(InStream *in, int bitSize);
-int streamReadBit(char byteToRead);
+int streamReadBit(uint8 byteToRead);
 InStream *openInStream(char *filename, char *openMethod);
 void closeInStream(InStream *in);
 
