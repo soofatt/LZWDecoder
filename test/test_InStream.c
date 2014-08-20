@@ -24,7 +24,7 @@ void test_openInStream_given_existant_file_should_read_a(){
   int result;
 
   Try{
-    in = openInStream("InputTest.txt", "r");
+    in = openInStream("test/data/InputTest.txt", "r");
     result = fgetc(in->file);
     closeInStream(in);
   }Catch(e){
@@ -40,7 +40,7 @@ void test_openInStream_given_existant_file_should_read_6(){
   int result;
 
   Try{
-    in = openInStream("InputTest_2.txt", "r");
+    in = openInStream("test/data/InputTest_2.txt", "r");
     result = fgetc(in->file);
     closeInStream(in);
   }Catch(e){
@@ -56,7 +56,7 @@ void test_streamReadBits_given_a_0x61_should_return_a(){
   int result;
 
   Try{
-    in = openInStream("InputTest_3.txt", "r");
+    in = openInStream("test/data/InputTest_3.txt", "r");
   }Catch(e){
     TEST_ASSERT_EQUAL(ERR_CANNOT_OPEN_FILE, e);
   }
@@ -81,7 +81,7 @@ void test_streamReadBits_given_a_0x8000_should_return_256(){
   int result;
 
   Try{
-    in = openInStream("InputTest_4.txt", "r");
+    in = openInStream("test/data/InputTest_4.txt", "r");
   }Catch(e){
     TEST_ASSERT_EQUAL(ERR_CANNOT_OPEN_FILE, e);
   }
@@ -106,7 +106,7 @@ void test_streamReadBits_given_a_0x804040_should_return_256_and_257(){
   int result, result2;
 
   Try{
-    in = openInStream("InputTest_5.txt", "r");
+    in = openInStream("test/data/InputTest_5.txt", "r");
   }Catch(e){
     TEST_ASSERT_EQUAL(ERR_CANNOT_OPEN_FILE, e);
   }
@@ -133,7 +133,7 @@ void test_streamReadBits_given_a_0x804040_should_return_97_and_257(){
   int result, result2;
 
   Try{
-    in = openInStream("InputTest_6.txt", "r");
+    in = openInStream("test/data/InputTest_6.txt", "r");
   }Catch(e){
     TEST_ASSERT_EQUAL(ERR_CANNOT_OPEN_FILE, e);
   }
@@ -160,7 +160,7 @@ void test_streamReadBits_given_a_0x62616e_should_return_98_97_110(){
   int result, result2, result3;
 
   Try{
-    in = openInStream("InputTest_7.txt", "r");
+    in = openInStream("test/data/InputTest_7.txt", "r");
   }Catch(e){
     TEST_ASSERT_EQUAL(ERR_CANNOT_OPEN_FILE, e);
   }

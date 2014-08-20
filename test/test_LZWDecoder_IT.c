@@ -12,8 +12,8 @@ void tearDown(void){}
 void test_lzwDecode_given_code_97_should_decode_into_a(){
   CEXCEPTION_T e;
   Dictionary *dictionary = dictionaryNew(100);
-  OutStream *out = openOutStream("LZWDecodeOutput_1.txt", "w");
-  InStream *in = openInStream("LZWDecodeInput_1.txt", "r");
+  OutStream *out = openOutStream("test/data/LZWDecodeOutput_1.txt", "w");
+  InStream *in = openInStream("test/data/LZWDecodeInput_1.txt", "r");
   
   Try{
     lzwDecode(in, dictionary, out);
@@ -36,8 +36,8 @@ void test_lzwDecode_given_code_97_should_decode_into_a(){
 void test_lzwDecode_given_code_98_97_should_decode_into_ba(){
   CEXCEPTION_T e;
   Dictionary *dictionary = dictionaryNew(100);
-  OutStream *out = openOutStream("LZWDecodeOutput_2.txt", "w");
-  InStream *in = openInStream("LZWDecodeInput_2.txt", "r");
+  OutStream *out = openOutStream("test/data/LZWDecodeOutput_2.txt", "w");
+  InStream *in = openInStream("test/data/LZWDecodeInput_2.txt", "r");
   
   Try{
     lzwDecode(in, dictionary, out);
@@ -52,13 +52,16 @@ void test_lzwDecode_given_code_98_97_should_decode_into_ba(){
     }
     TEST_ASSERT_EQUAL_STRING("ba", dictionary->entries[0].code);
   }
+  
+  closeInStream(in);
+  closeOutStream(out);
 }
 
 void test_lzwDecode_given_code_98_97_110_should_decode_into_ban(){
   CEXCEPTION_T e;
   Dictionary *dictionary = dictionaryNew(100);
-  OutStream *out = openOutStream("LZWDecodeOutput_3.txt", "w");
-  InStream *in = openInStream("LZWDecodeInput_3.txt", "r");
+  OutStream *out = openOutStream("test/data/LZWDecodeOutput_3.txt", "w");
+  InStream *in = openInStream("test/data/LZWDecodeInput_3.txt", "r");
   
   Try{
     lzwDecode(in, dictionary, out);
@@ -74,6 +77,9 @@ void test_lzwDecode_given_code_98_97_110_should_decode_into_ban(){
     TEST_ASSERT_EQUAL_STRING("ba", dictionary->entries[0].code);
     TEST_ASSERT_EQUAL_STRING("an", dictionary->entries[1].code);
   }
+  
+  closeInStream(in);
+  closeOutStream(out);
 }
 
 /*
@@ -89,8 +95,8 @@ void test_lzwDecode_given_code_98_97_110_should_decode_into_ban(){
 void test_lzwDecode_case_1_should_decode_into_abcdabc(){
   CEXCEPTION_T e;
   Dictionary *dictionary = dictionaryNew(4096);
-  OutStream *out = openOutStream("LZWDecodeOutput_4.txt", "w");
-  InStream *in = openInStream("LZWDecodeInput_4.txt", "r");
+  OutStream *out = openOutStream("test/data/LZWDecodeOutput_4.txt", "w");
+  InStream *in = openInStream("test/data/LZWDecodeInput_4.txt", "r");
   
   Try{
     lzwDecode(in, dictionary, out);
@@ -109,6 +115,9 @@ void test_lzwDecode_case_1_should_decode_into_abcdabc(){
     TEST_ASSERT_EQUAL_STRING("da", dictionary->entries[3].code);
     TEST_ASSERT_EQUAL_STRING("abc", dictionary->entries[4].code);
   }
+  
+  closeInStream(in);
+  closeOutStream(out);
 }
 
 /*
@@ -124,8 +133,8 @@ void test_lzwDecode_case_1_should_decode_into_abcdabc(){
 void test_lzwDecode_case_2_should_decode_into_aaaaaaa(){
   CEXCEPTION_T e;
   Dictionary *dictionary = dictionaryNew(4096);
-  OutStream *out = openOutStream("LZWDecodeOutput_5.txt", "w");
-  InStream *in = openInStream("LZWDecodeInput_5.txt", "r");
+  OutStream *out = openOutStream("test/data/LZWDecodeOutput_5.txt", "w");
+  InStream *in = openInStream("test/data/LZWDecodeInput_5.txt", "r");
   
   Try{
     lzwDecode(in, dictionary, out);
@@ -142,6 +151,9 @@ void test_lzwDecode_case_2_should_decode_into_aaaaaaa(){
     TEST_ASSERT_EQUAL_STRING("aaa", dictionary->entries[1].code);
     TEST_ASSERT_EQUAL_STRING("aaaa", dictionary->entries[2].code);
   }
+  
+  closeInStream(in);
+  closeOutStream(out);
 }
 
 /*
@@ -157,8 +169,8 @@ void test_lzwDecode_case_2_should_decode_into_aaaaaaa(){
 void test_lzwDecode_case_3_should_decode_into_bananana(){
   CEXCEPTION_T e;
   Dictionary *dictionary = dictionaryNew(4096);
-  OutStream *out = openOutStream("LZWDecodeOutput_6.txt", "w");
-  InStream *in = openInStream("LZWDecodeInput_6.txt", "r");
+  OutStream *out = openOutStream("test/data/LZWDecodeOutput_6.txt", "w");
+  InStream *in = openInStream("test/data/LZWDecodeInput_6.txt", "r");
   
   Try{
     lzwDecode(in, dictionary, out);
@@ -176,6 +188,9 @@ void test_lzwDecode_case_3_should_decode_into_bananana(){
     TEST_ASSERT_EQUAL_STRING("na", dictionary->entries[2].code);
     TEST_ASSERT_EQUAL_STRING("ana", dictionary->entries[3].code);
   }
+  
+  closeInStream(in);
+  closeOutStream(out);
 }
 
 /*
@@ -191,8 +206,8 @@ void test_lzwDecode_case_3_should_decode_into_bananana(){
 void test_lzwDecode_case_4_should_decode_into_banana_nanaba(){
   CEXCEPTION_T e;
   Dictionary *dictionary = dictionaryNew(4096);
-  OutStream *out = openOutStream("LZWDecodeOutput_7.txt", "w");
-  InStream *in = openInStream("LZWDecodeInput_7.txt", "r");
+  OutStream *out = openOutStream("test/data/LZWDecodeOutput_7.txt", "w");
+  InStream *in = openInStream("test/data/LZWDecodeInput_7.txt", "r");
   
   Try{
     lzwDecode(in, dictionary, out);
@@ -214,4 +229,7 @@ void test_lzwDecode_case_4_should_decode_into_banana_nanaba(){
     TEST_ASSERT_EQUAL_STRING("nan", dictionary->entries[6].code);
     TEST_ASSERT_EQUAL_STRING("nab", dictionary->entries[7].code);
   }
+  
+  closeInStream(in);
+  closeOutStream(out);
 }

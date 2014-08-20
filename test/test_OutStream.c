@@ -10,7 +10,7 @@ void tearDown(){}
 void test_openOutStream_given_output_test_file_should_write_d_to_file(){
   OutStream *out;
 
-  out = openOutStream("OutputTest.txt", "w");
+  out = openOutStream("test/data/OutputTest.txt", "w");
   fputc('d', out->file);
   closeOutStream(out);
 }
@@ -18,7 +18,7 @@ void test_openOutStream_given_output_test_file_should_write_d_to_file(){
 void test_streamWriteBit_given_bitToWrite_1_should_write_1_to_currentByte(){
   OutStream *out;
 
-  out = openOutStream("OutputTestBitWrite.txt", "w");
+  out = openOutStream("test/data/OutputTestBitWrite.txt", "w");
   
   streamWriteBit(out, 1);
   
@@ -31,7 +31,7 @@ void test_streamWriteBit_given_bitToWrite_1_should_write_1_to_currentByte(){
 void test_streamWriteBit_given_bitToWrite_1_should_write_1_to_currentByte_case_2(){
   OutStream *out;
 
-  out = openOutStream("OutputTestBitWrite.txt", "w");
+  out = openOutStream("test/data/OutputTestBitWrite.txt", "w");
   out->currentByte = 0x02;
   out->bitIndex = 1;
   streamWriteBit(out, 1);
@@ -45,7 +45,7 @@ void test_streamWriteBit_given_bitToWrite_1_should_write_1_to_currentByte_case_2
 void test_streamWriteBits_given_bitsToWrite_97_should_write_a_to_file(){
   OutStream *out;
 
-  out = openOutStream("OutputTestBitsWrite_1.txt", "w");
+  out = openOutStream("test/data/OutputTestBitsWrite_1.txt", "w");
 
   streamWriteBits(out, 97, 8);
   
@@ -58,7 +58,7 @@ void test_streamWriteBits_given_bitsToWrite_97_should_write_a_to_file(){
 void test_streamWriteBits_given_bitsToWrite_97_and_98_should_write_ab_to_file(){
   OutStream *out;
 
-  out = openOutStream("OutputTestBitsWrite_2.txt", "w");
+  out = openOutStream("test/data/OutputTestBitsWrite_2.txt", "w");
 
   streamWriteBits(out, 97, 8);
   
@@ -76,7 +76,7 @@ void test_streamWriteBits_given_bitsToWrite_97_and_98_should_write_ab_to_file(){
 void test_streamWriteBits_given_bitsToWrite_98_97_110_should_write_ban_to_file(){
   OutStream *out;
 
-  out = openOutStream("OutputTestBitsWrite_3.txt", "w");
+  out = openOutStream("test/data/OutputTestBitsWrite_3.txt", "w");
 
   streamWriteBits(out, 98, 8);
   
@@ -99,7 +99,7 @@ void test_streamWriteBits_given_bitsToWrite_98_97_110_should_write_ban_to_file()
 void test_openOutStream_given_currentByte_0x70_should_flush_p_to_file(){
   OutStream *out;
 
-  out = openOutStream("OutputFlushTest.txt", "w");
+  out = openOutStream("test/data/OutputFlushTest.txt", "w");
 
   out->currentByte = 0x70;
   
