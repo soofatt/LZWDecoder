@@ -48,6 +48,10 @@ void lzwDecodeForTesting(InStream *in, Dictionary *dict, OutStream *out){
   
   while(inputCode != -1){
     inputCode = streamReadBits(in, bitsToRead);
+    if(inputCode == -1)
+      Throw(END_OF_STREAM);
+    else if(inputCode < -1)
+      Throw(ERR_INVALID_INDEX);
     translation = _getDictTranslation(dict, inputCode);
     
     if(translation == NULL)
@@ -127,7 +131,7 @@ void test_lzwDecode_given_bits_to_read_2_should_increase_to_4(){
   streamWriteBits_Expect(&out, 98, 8);
   streamReadBits_ExpectAndReturn(&in, 4, 2);
   streamWriteBits_Expect(&out, 99, 8);
-  streamReadBits_ExpectAndThrow(&in, 4, END_OF_STREAM);
+  streamReadBits_ExpectAndReturn(&in, 4, -1);
   
   Try{
     lzwDecodeForTesting(&in, dictionary, &out);
@@ -181,7 +185,7 @@ void test_lzwDecode_given_bits_to_read_2_should_increase_to_4_case_2(){
   streamWriteBits_Expect(&out, 97, 8);
   streamReadBits_ExpectAndReturn(&in, 4, 0);
   streamWriteBits_Expect(&out, 97, 8);
-  streamReadBits_ExpectAndThrow(&in, 4, END_OF_STREAM);
+  streamReadBits_ExpectAndReturn(&in, 4, -1);
   
   Try{
     lzwDecodeForTesting(&in, dictionary, &out);

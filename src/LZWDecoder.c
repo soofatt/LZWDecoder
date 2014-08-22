@@ -48,6 +48,8 @@ void lzwDecode(InStream *in, Dictionary *dict, OutStream *out){
       translation = codeNewAndAppend("", getAsciiTranslation(inputCode));
     else if(inputCode >= 256)
       translation = _getDictTranslation(dict, inputCode);
+    else if(inputCode == -1)
+      Throw(END_OF_STREAM);
     else
       Throw(ERR_INVALID_INDEX);
     

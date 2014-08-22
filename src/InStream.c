@@ -25,6 +25,7 @@ InStream *openInStream(char *fileName, char *openMethod){
 	inStream->filename = fileName;
 	inStream->currentByte = 0;
 	inStream->bitIndex = 0;
+	inStream->byteIndex = 0;
 
   return inStream;
 }
@@ -36,15 +37,17 @@ InStream *openInStream(char *fileName, char *openMethod){
  *
  *Output:outputWhole -> the combined bits read as an integer.
  *
- *Throw:  END_OF_STREAM -> Thrown when EOF is reached.
+ *Throw:  -
  *
  */
 int streamReadBits(InStream *in, int bitSize){
   int i, inputByte, outputWhole = 0, bitCount = 0, byteCount = 0;
   uint8 byteToRead, tempBitRead = 0;
 
-  if(feof(in->file) != 0)
-    Throw(END_OF_STREAM);
+  if(feof(in->file) != 0){
+    in->byteIndex = -1;
+    return -1;
+  }
 
   while(byteCount <= (bitSize/8)){
     if(in->currentByte != 0)

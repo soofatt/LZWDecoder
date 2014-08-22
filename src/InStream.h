@@ -9,7 +9,7 @@ typedef struct InStream{
 	char *filename;
 	uint8 currentByte;
 	// uint32 length;
-	// uint32 byteIndex;
+	uint32 byteIndex;
 	uint32 bitIndex;
 }InStream;
 

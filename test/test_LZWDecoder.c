@@ -75,7 +75,7 @@ void test_lzwDecode_given_code_97_should_decode_into_a(){
    
   streamReadBits_ExpectAndReturn(&in, 8, 97);
   streamWriteBits_Expect(&out, 97, 8);
-  streamReadBits_ExpectAndThrow(&in, 9, END_OF_STREAM);
+  streamReadBits_ExpectAndReturn(&in, 9, -1);
   
   Try{
     lzwDecode(&in, dictionary, &out);
@@ -96,7 +96,7 @@ void test_lzwDecode_given_code_98_97_110_should_decode_into_ban(){
   streamWriteBits_Expect(&out, 97, 8);
   streamReadBits_ExpectAndReturn(&in, 9, 110);
   streamWriteBits_Expect(&out, 110, 8);
-  streamReadBits_ExpectAndThrow(&in, 9, END_OF_STREAM);
+  streamReadBits_ExpectAndReturn(&in, 9, -1);
   
   Try{
     lzwDecode(&in, dictionary, &out);
@@ -132,7 +132,7 @@ void test_lzwDecode_case_1_should_decode_into_abcdabc(){
   streamWriteBits_Expect(&out, 98, 8);
   streamReadBits_ExpectAndReturn(&in, 9, 99);
   streamWriteBits_Expect(&out, 99, 8);
-  streamReadBits_ExpectAndThrow(&in, 9, END_OF_STREAM);
+  streamReadBits_ExpectAndReturn(&in, 9, -1);
   
   Try{
     lzwDecode(&in, dictionary, &out);
@@ -169,7 +169,7 @@ void test_lzwDecode_case_2_should_decode_into_aaaaaaa(){
   streamWriteBits_Expect(&out, 97, 8);
   streamReadBits_ExpectAndReturn(&in, 9, 97);
   streamWriteBits_Expect(&out, 97, 8);
-  streamReadBits_ExpectAndThrow(&in, 9, END_OF_STREAM);
+  streamReadBits_ExpectAndReturn(&in, 9, -1);
   
   Try{
     lzwDecode(&in, dictionary, &out);
@@ -206,7 +206,7 @@ void test_lzwDecode_case_3_should_decode_into_bananana(){
   streamWriteBits_Expect(&out, 97, 8);
   streamWriteBits_Expect(&out, 110, 8);
   streamWriteBits_Expect(&out, 97, 8);
-  streamReadBits_ExpectAndThrow(&in, 9, END_OF_STREAM);
+  streamReadBits_ExpectAndReturn(&in, 9, -1);
   
   Try{
     lzwDecode(&in, dictionary, &out);
@@ -253,7 +253,7 @@ void test_lzwDecode_case_4_should_decode_into_banana_nanaba(){
   streamReadBits_ExpectAndReturn(&in, 9, 256);
   streamWriteBits_Expect(&out, 98, 8);
   streamWriteBits_Expect(&out, 97, 8);
-  streamReadBits_ExpectAndThrow(&in, 9, END_OF_STREAM);
+  streamReadBits_ExpectAndReturn(&in, 9, -1);
   
   Try{
     lzwDecode(&in, dictionary, &out);
